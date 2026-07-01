@@ -1,0 +1,26 @@
+{
+    "Diabetes": {
+        "model": "Calibrated VotingClassifier (RF + GBC + LR)",
+        "accuracy": 0.9028,
+        "precision": 0.9566,
+        "recall": 0.8961,
+        "f1": 0.9254,
+        "roc_auc": 0.9695
+    },
+    "Heart_Disease": {
+        "model": "Calibrated VotingClassifier (RF + GBC + LR)",
+        "accuracy": 0.8674,
+        "precision": 0.8778,
+        "recall": 0.9299,
+        "f1": 0.9031,
+        "roc_auc": 0.9419
+    },
+    "Liver_Disease": {
+        "model": "Calibrated VotingClassifier (RF + GBC + LR)",
+        "accuracy": 0.8248,
+        "precision": 0.8383,
+        "recall": 0.8027,
+        "f1": 0.8202,
+        "roc_auc": 0.9124
+    }
+}
