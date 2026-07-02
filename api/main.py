@@ -1,21 +1,25 @@
 """
 MedPredict AI — FastAPI Backend
-Compatible with: local uvicorn server AND Vercel serverless deployment
+Serves both the REST API (/api/*) and the frontend static files (/).
+Compatible with: local uvicorn, Render.com (Docker), and Vercel (API-only).
 """
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 import sys, os
 
-# ── Resolve paths (works locally and on Vercel) ───────────────────────────────
-# On Vercel: files live under /var/task/ (project root)
-# Locally: __file__ is at <project>/api/main.py
+# ── Resolve paths ─────────────────────────────────────────────────────────────
+# On Render/Docker: /app/api/main.py → project root = /app
+# Locally: <project>/api/main.py   → project root = <project>
 _api_dir     = os.path.dirname(os.path.abspath(__file__))
 _project_dir = os.path.dirname(_api_dir)
 _src_dir     = os.path.join(_project_dir, "src")
+_frontend_dir = os.path.join(_project_dir, "frontend")
 
-# Make sure src/ is importable
+# Make src/ importable
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
@@ -70,7 +74,7 @@ def startup_event():
         print(f"WARNING: Could not pre-load models: {e}")
 
 
-# ── Endpoints ──────────────────────────────────────────────────────────────────
+# ── API Endpoints ──────────────────────────────────────────────────────────────
 @app.get("/health")
 @app.get("/api/health")
 def health_check():
@@ -84,14 +88,13 @@ def predict_disease(data: PatientData):
         result = predict(data.dict())
         return {"success": True, "predictions": result}
     except RuntimeError as e:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Models not ready: {e}"
-        )
+        raise HTTPException(status_code=503, detail=f"Models not ready: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ── Vercel handler ─────────────────────────────────────────────────────────────
-# Vercel's @vercel/python runtime expects the app at module level
-# The `app` variable above IS the ASGI app — no extra handler needed
+# ── Serve frontend static files ────────────────────────────────────────────────
+# This makes the Render.com URL serve BOTH the API and the frontend UI.
+# API routes above take priority; everything else goes to the static frontend.
+if os.path.isdir(_frontend_dir):
+    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")

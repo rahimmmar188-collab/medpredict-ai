@@ -1,23 +1,19 @@
-# Use official lightweight Python image
-FROM python:3.10-slim
+# ── Stage 1: Build environment ─────────────────────────────────────────────
+FROM python:3.10-slim AS base
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code
+# ── Stage 2: Copy project files ─────────────────────────────────────────────
 COPY . .
 
-# Generate data and train models (for self-contained image)
-# In production, models would be trained outside and just copied.
-RUN cd data && python generate_mock_data.py
-RUN cd src && python train.py
-
-# Expose port
+# ── Expose port ─────────────────────────────────────────────────────────────
 EXPOSE 8000
 
-# Run FastAPI
+# ── Run FastAPI server ───────────────────────────────────────────────────────
+# Models are pre-trained and included in the repo (models/*.joblib)
+# No retraining needed — just start the server
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

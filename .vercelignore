@@ -1,0 +1,15 @@
+# Exclude everything from Vercel except the frontend/ folder
+# (Vercel only needs the static HTML/CSS/JS files)
+api/
+src/
+models/
+data/
+__pycache__/
+*.py
+*.joblib
+*.bat
+*.log
+*.md
+Dockerfile
+requirements.txt
+.gitattributes
