@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPredict AI | Multi-Disease Risk Assessment</title>
+    <meta name="description" content="AI-powered patient risk assessment for Diabetes, Heart Disease, and Liver Disease using 19 clinical biomarkers.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect width="40" height="40" rx="12" fill="url(#logoGrad)"/>
+                    <path d="M20 8 L20 32 M8 20 L32 20" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="20" cy="20" r="5" fill="white" opacity="0.3"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#6366f1"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="header-text">
+                <h1>MedPredict <span class="gradient-text">AI</span></h1>
+                <p>Advanced Hybrid ML &bull; 19 Clinical Biomarkers &bull; Real-Time Risk Assessment</p>
+            </div>
+        </header>
+
+        <!-- Clinical guide banner -->
+        <div class="guide-banner glass-panel">
+            <div class="guide-icon">💡</div>
+            <div class="guide-text">
+                <strong>How to use:</strong> Enter the patient's lab results below. Each field shows its <span class="tag-normal">Normal</span>
+                <span class="tag-medium">Borderline</span> <span class="tag-high">High Risk</span> reference ranges.
+                The bar colors update in real-time as you type to reflect the clinical significance of each value.
+            </div>
+        </div>
+
+        <main class="dashboard">
+            <!-- ── FORM SECTION ──────────────────────────────────────────── -->
+            <section class="form-section glass-panel">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <h2>Patient Clinical Data</h2>
+                </div>
+
+                <form id="prediction-form">
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!--  SECTION 1: Demographics & Lifestyle               -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="field-group">
+                        <div class="field-group-header">
+                            <span class="group-icon">👤</span>
+                            <div>
+                                <span class="group-title">Demographics &amp; Lifestyle</span>
+                                <span class="group-desc">Basic patient information and lifestyle habits that influence overall disease risk.</span>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+
+                            <div class="input-group" id="grp-Age">
+                                <label for="age">
+                                    Age <span class="unit">(years)</span>
+                                    <span class="range-hint">Risk increases after age 45</span>
+                                </label>
+                                <input type="number" id="age" name="Age" required min="18" max="120" placeholder="e.g. 45"
+                                    data-ranges='{"normal":[18,44],"medium":[45,64],"high":[65,120]}'
+                                    data-normal="18–44" data-medium="45–64" data-high="65+">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:34%">18–44</div>
+                                        <div class="range-seg seg-medium" style="width:29%">45–64</div>
+                                        <div class="range-seg seg-high"   style="width:37%">65+</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="gender">
+                                    Gender
+                                    <span class="range-hint">Males have slightly higher CV risk</span>
+                                </label>
+                                <select id="gender" name="Gender" required>
+                                    <option value="" disabled selected>Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group" id="grp-BMI">
+                                <label for="bmi">
+                                    BMI <span class="unit">(Body Mass Index)</span>
+                                    <span class="range-hint">Weight(kg) ÷ Height²(m²). Obesity raises all disease risks.</span>
+                                </label>
+                                <input type="number" step="0.1" id="bmi" name="BMI" required min="10" max="70" placeholder="e.g. 25.5"
+                                    data-ranges='{"normal":[18.5,24.9],"medium":[25,29.9],"high":[30,70]}'
+                                    data-normal="18.5–24.9" data-medium="25–29.9 (Overweight)" data-high="≥30 (Obese)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">Normal (18.5–24.9)</div>
+                                        <div class="range-seg seg-medium" style="width:30%">Overweight (25–29.9)</div>
+                                        <div class="range-seg seg-high"   style="width:37%">Obese (≥30)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="physical-activity">
+                                    Physical Activity Level
+                                    <span class="range-hint">Higher activity lowers diabetes and heart risk</span>
+                                </label>
+                                <select id="physical-activity" name="Physical_Activity" required>
+                                    <option value="" disabled selected>Select level</option>
+                                    <option value="1">1 — Sedentary (desk job, no exercise)</option>
+                                    <option value="2">2 — Light (walks occasionally, &lt;2h/week)</option>
+                                    <option value="3">3 — Moderate (30 min/day most days)</option>
+                                    <option value="4">4 — Active (intense exercise ≥5 days/week)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="smoking">
+                                    Smoking Status
+                                    <span class="range-hint">Smoking doubles heart disease and liver risk</span>
+                                </label>
+                                <select id="smoking" name="Smoking" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="0">No — Non-smoker</option>
+                                    <option value="1">Yes — Current smoker</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="alcohol-use">
+                                    Alcohol Consumption
+                                    <span class="range-hint">Heavy alcohol use is the leading cause of liver disease</span>
+                                </label>
+                                <select id="alcohol-use" name="Alcohol_Use" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="0">None — Does not drink</option>
+                                    <option value="1">Moderate — 1–2 drinks/day</option>
+                                    <option value="2">Heavy — 3+ drinks/day</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!--  SECTION 2: Vitals & Blood Sugar                   -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="field-group">
+                        <div class="field-group-header">
+                            <span class="group-icon">❤️</span>
+                            <div>
+                                <span class="group-title">Vitals &amp; Blood Sugar</span>
+                                <span class="group-desc">Blood pressure and glycemic (blood sugar) markers are the primary drivers of diabetes and heart disease prediction.</span>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+
+                            <div class="input-group" id="grp-BP_Sys">
+                                <label for="sys-bp">
+                                    Systolic Blood Pressure <span class="unit">(mmHg)</span>
+                                    <span class="range-hint">Top number in a BP reading. High BP = #1 heart attack risk factor.</span>
+                                </label>
+                                <input type="number" id="sys-bp" name="Blood_Pressure_Systolic" required min="60" max="300" placeholder="e.g. 120"
+                                    data-ranges='{"normal":[60,119],"medium":[120,139],"high":[140,300]}'
+                                    data-normal="&lt;120 (Normal)" data-medium="120–139 (Elevated)" data-high="≥140 (Hypertension)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:35%">&lt;120 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">120–139 Elevated</div>
+                                        <div class="range-seg seg-high"   style="width:35%">≥140 Hypertension</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-BP_Dia">
+                                <label for="dia-bp">
+                                    Diastolic Blood Pressure <span class="unit">(mmHg)</span>
+                                    <span class="range-hint">Bottom number. ≥90 is Stage 1 Hypertension.</span>
+                                </label>
+                                <input type="number" id="dia-bp" name="Blood_Pressure_Diastolic" required min="40" max="200" placeholder="e.g. 80"
+                                    data-ranges='{"normal":[40,79],"medium":[80,89],"high":[90,200]}'
+                                    data-normal="&lt;80 (Normal)" data-medium="80–89 (Elevated)" data-high="≥90 (Hypertension)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">&lt;80 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">80–89 Elevated</div>
+                                        <div class="range-seg seg-high"   style="width:37%">≥90 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-Glucose">
+                                <label for="glucose">
+                                    Fasting Glucose <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">Blood sugar after 8+ hours fasting. PRIMARY diabetes marker.</span>
+                                </label>
+                                <input type="number" id="glucose" name="Glucose" required min="40" max="600" placeholder="e.g. 95"
+                                    data-ranges='{"normal":[40,99],"medium":[100,125],"high":[126,600]}'
+                                    data-normal="&lt;100 (Normal)" data-medium="100–125 (Pre-diabetic)" data-high="≥126 (Diabetic)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:30%">&lt;100 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">100–125 Pre-diabetic</div>
+                                        <div class="range-seg seg-high"   style="width:40%">≥126 Diabetic</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-HbA1c">
+                                <label for="hba1c">
+                                    HbA1c <span class="unit">(%)</span>
+                                    <span class="range-hint">3-month average blood sugar. Most reliable diabetes test. ≥6.5% = Diabetes.</span>
+                                </label>
+                                <input type="number" step="0.1" id="hba1c" name="HbA1c" required min="3" max="15" placeholder="e.g. 5.6"
+                                    data-ranges='{"normal":[3,5.6],"medium":[5.7,6.4],"high":[6.5,15]}'
+                                    data-normal="&lt;5.7% (Normal)" data-medium="5.7–6.4% (Pre-diabetic)" data-high="≥6.5% (Diabetic)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:30%">&lt;5.7% Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">5.7–6.4% Pre-diabetic</div>
+                                        <div class="range-seg seg-high"   style="width:40%">≥6.5% Diabetic</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!--  SECTION 3: Lipid Panel                            -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="field-group">
+                        <div class="field-group-header">
+                            <span class="group-icon">🧪</span>
+                            <div>
+                                <span class="group-title">Lipid Panel (Cholesterol)</span>
+                                <span class="group-desc">Cholesterol levels are the primary drivers of heart disease. HDL is "good" — higher is better. LDL is "bad" — lower is better.</span>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+
+                            <div class="input-group" id="grp-Chol">
+                                <label for="cholesterol">
+                                    Total Cholesterol <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">Sum of all cholesterol in blood. ≥240 is High.</span>
+                                </label>
+                                <input type="number" id="cholesterol" name="Cholesterol" required min="50" max="500" placeholder="e.g. 190"
+                                    data-ranges='{"normal":[50,199],"medium":[200,239],"high":[240,500]}'
+                                    data-normal="&lt;200 (Optimal)" data-medium="200–239 (Borderline)" data-high="≥240 (High)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">&lt;200 Optimal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">200–239 Borderline</div>
+                                        <div class="range-seg seg-high"   style="width:37%">≥240 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-HDL">
+                                <label for="hdl">
+                                    HDL Cholesterol <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">⚠️ "Good" cholesterol — HIGHER IS BETTER. &lt;40 = Major heart risk.</span>
+                                </label>
+                                <input type="number" id="hdl" name="HDL_Cholesterol" required min="5" max="150" placeholder="e.g. 55"
+                                    data-ranges='{"normal":[60,150],"medium":[40,59],"high":[5,39]}'
+                                    data-inverse="true"
+                                    data-normal="≥60 (Protective)" data-medium="40–59 (Acceptable)" data-high="&lt;40 (Low — Risk!)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-high"   style="width:30%">&lt;40 Low Risk</div>
+                                        <div class="range-seg seg-medium" style="width:30%">40–59 Acceptable</div>
+                                        <div class="range-seg seg-normal" style="width:40%">≥60 Protective</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-LDL">
+                                <label for="ldl">
+                                    LDL Cholesterol <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">"Bad" cholesterol. &gt;160 significantly raises heart attack risk.</span>
+                                </label>
+                                <input type="number" id="ldl" name="LDL_Cholesterol" required min="10" max="400" placeholder="e.g. 110"
+                                    data-ranges='{"normal":[10,129],"medium":[130,159],"high":[160,400]}'
+                                    data-normal="&lt;130 (Optimal)" data-medium="130–159 (Borderline)" data-high="≥160 (High)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:35%">&lt;130 Optimal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">130–159 Borderline</div>
+                                        <div class="range-seg seg-high"   style="width:35%">≥160 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-Trig">
+                                <label for="triglycerides">
+                                    Triglycerides <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">Blood fats linked to diabetes, obesity, and heart disease. ≥200 is High.</span>
+                                </label>
+                                <input type="number" id="triglycerides" name="Triglycerides" required min="20" max="1000" placeholder="e.g. 130"
+                                    data-ranges='{"normal":[20,149],"medium":[150,199],"high":[200,1000]}'
+                                    data-normal="&lt;150 (Normal)" data-medium="150–199 (Borderline)" data-high="≥200 (High)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">&lt;150 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">150–199 Borderline</div>
+                                        <div class="range-seg seg-high"   style="width:37%">≥200 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!--  SECTION 4: Organ Function Labs                    -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="field-group">
+                        <div class="field-group-header">
+                            <span class="group-icon">🔬</span>
+                            <div>
+                                <span class="group-title">Organ Function Labs</span>
+                                <span class="group-desc">Creatinine tests kidney function. ALT and AST are liver enzymes — elevated levels indicate liver damage.</span>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+
+                            <div class="input-group" id="grp-Creat">
+                                <label for="creatinine">
+                                    Creatinine <span class="unit">(mg/dL)</span>
+                                    <span class="range-hint">Kidney function marker. High creatinine = poor kidneys, raises heart risk.</span>
+                                </label>
+                                <input type="number" step="0.01" id="creatinine" name="Creatinine" required min="0.1" max="20" placeholder="e.g. 0.9"
+                                    data-ranges='{"normal":[0.1,1.2],"medium":[1.3,2.0],"high":[2.1,20]}'
+                                    data-normal="0.6–1.2 (Normal)" data-medium="1.3–2.0 (Mild impairment)" data-high="&gt;2.0 (Kidney disease)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:35%">0.6–1.2 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">1.3–2.0 Mild</div>
+                                        <div class="range-seg seg-high"   style="width:35%">&gt;2.0 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-ALT">
+                                <label for="alt">
+                                    ALT — Alanine Aminotransferase <span class="unit">(U/L)</span>
+                                    <span class="range-hint">PRIMARY liver damage marker. Normal &lt;40. &gt;200 indicates serious liver injury.</span>
+                                </label>
+                                <input type="number" id="alt" name="ALT" required min="1" max="500" placeholder="e.g. 25"
+                                    data-ranges='{"normal":[1,39],"medium":[40,80],"high":[81,500]}'
+                                    data-normal="&lt;40 (Normal)" data-medium="40–80 (Mild elevation)" data-high="&gt;80 (High — liver damage)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">&lt;40 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">40–80 Mild</div>
+                                        <div class="range-seg seg-high"   style="width:37%">&gt;80 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-group" id="grp-AST">
+                                <label for="ast">
+                                    AST — Aspartate Aminotransferase <span class="unit">(U/L)</span>
+                                    <span class="range-hint">Liver/heart damage marker. AST &gt; ALT ratio may indicate alcoholic liver disease.</span>
+                                </label>
+                                <input type="number" id="ast" name="AST" required min="1" max="500" placeholder="e.g. 22"
+                                    data-ranges='{"normal":[1,39],"medium":[40,80],"high":[81,500]}'
+                                    data-normal="&lt;40 (Normal)" data-medium="40–80 (Mild elevation)" data-high="&gt;80 (High — liver damage)">
+                                <div class="range-bar-wrap">
+                                    <div class="range-bar">
+                                        <div class="range-seg seg-normal" style="width:33%">&lt;40 Normal</div>
+                                        <div class="range-seg seg-medium" style="width:30%">40–80 Mild</div>
+                                        <div class="range-seg seg-high"   style="width:37%">&gt;80 High</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!--  SECTION 5: Family History                         -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="field-group">
+                        <div class="field-group-header">
+                            <span class="group-icon">🧬</span>
+                            <div>
+                                <span class="group-title">Family History (Genetics)</span>
+                                <span class="group-desc">Having a first-degree relative (parent, sibling) with a disease increases your genetic risk significantly.</span>
+                            </div>
+                        </div>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="fam-diabetes">
+                                    Diabetes in Immediate Family
+                                    <span class="range-hint">Parent or sibling diagnosed with Type 1 or Type 2 Diabetes</span>
+                                </label>
+                                <select id="fam-diabetes" name="Family_History_Diabetes" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="0">No — No known family history</option>
+                                    <option value="1">Yes — Parent/sibling has diabetes</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="fam-heart">
+                                    Heart Disease in Immediate Family
+                                    <span class="range-hint">Parent or sibling had heart attack, stroke, or coronary disease before age 65</span>
+                                </label>
+                                <select id="fam-heart" name="Family_History_Heart" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="0">No — No known family history</option>
+                                    <option value="1">Yes — Parent/sibling has heart disease</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span class="btn-text">Analyze Risk</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+            </section>
+
+            <!-- ── RESULTS SECTION ───────────────────────────────────────── -->
+            <section class="results-section glass-panel">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <h2>Assessment Results</h2>
+                </div>
+
+                <!-- Risk legend -->
+                <div class="risk-legend">
+                    <div class="legend-item"><span class="legend-dot dot-low"></span> Low Risk (&lt;35%)</div>
+                    <div class="legend-item"><span class="legend-dot dot-medium"></span> Medium Risk (35–65%)</div>
+                    <div class="legend-item"><span class="legend-dot dot-high"></span> High Risk (&gt;65%)</div>
+                </div>
+
+                <div class="results-container" id="results-container">
+                    <div class="empty-state">
+                        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        <p>Enter patient lab values above and click<br><strong>Analyze Risk</strong> to see the AI assessment.<br>
+                        <small style="opacity:0.6;font-size:0.75rem;">Important: All fields are required for accurate results.</small></p>
+                    </div>
+                </div>
+
+                <button id="download-report" class="submit-btn secondary-btn hidden" style="margin-top:1.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download PDF Report
+                </button>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>⚠️ <strong>Medical Disclaimer:</strong> MedPredict AI is for research and educational purposes only. Results are not a medical diagnosis. Always consult a qualified healthcare professional for medical decisions.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
