@@ -7,9 +7,24 @@
  *  - PDF report download
  */
 
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://127.0.0.1:8000'   // local development
-    : '';                        // Vercel production: use relative /api/... path
+// ── API URL Configuration ─────────────────────────────────────────────────────
+// The backend (FastAPI + ML models) runs on Hugging Face Spaces (free, no card)
+// HF Space URL: https://rahimmmar188-collab-medpredict-ai.hf.space
+const HF_SPACE_URL = 'https://rahimmmar188-collab-medpredict-ai.hf.space';
+
+const API_BASE = (function() {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+        return 'http://127.0.0.1:8000';          // local dev
+    }
+    // On HF Spaces: same origin serves both frontend and API
+    if (host.includes('hf.space') || host.includes('huggingface.co')) {
+        return '';
+    }
+    // On Vercel / GitHub Pages: call the HF Space API
+    return HF_SPACE_URL;
+})();
+
 
 let lastPrediction = null;
 
