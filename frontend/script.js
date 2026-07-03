@@ -10,7 +10,7 @@
 // ── API URL Configuration ─────────────────────────────────────────────────────
 // The backend (FastAPI + ML models) runs on Hugging Face Spaces (free, no card)
 // HF Space URL: https://rahimmmar188-collab-medpredict-ai.hf.space
-const HF_SPACE_URL = 'https://rahimmmar188-collab-medpredict-ai.hf.space';
+const HF_SPACE_URL = 'https://rahim221-medpredict-ai.hf.space';
 
 const API_BASE = (function() {
     const host = window.location.hostname;
